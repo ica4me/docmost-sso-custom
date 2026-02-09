@@ -61,8 +61,9 @@ services:
   # ----------------------------------------------------------------
   # 4. DOCMOST (Aplikasi Utama - HIDDEN)
   # ----------------------------------------------------------------
+  # image: docmost/docmost:latest --> Terbaru
   docmost:
-    image: docmost/docmost:latest
+    image: docmost/docmost:0.25.2
     container_name: app_docmost
     depends_on:
       - postgres
