@@ -20,7 +20,7 @@ Implementasi SSO Middleware dengan Pendekatan JIT Provisioning dan Synthetic Log
 - 2 vCPU
 - 4 GB RAM
 - 30 GB (vda)
-- Public IP Address (38.47.93.132)
+- Public IP Address (**************)
 
 ## Tools Requirement
 
@@ -32,10 +32,10 @@ Windows server 2022
 Console Display Name: AD Testing
 
 Vendor: Active Directory
-Connection URL	ldap://38.47.92.102:389
+Connection URL	ldap://**************:389
 Users DN	CN=Users,DC=ad,DC=testing,DC=local
 Bind DN	CN=Test Admin,CN=Users,DC=ad,DC=testing,DC=local
-Bind Credential	This_2me@oke
+Bind Credential	**************
 Kerberos Principal	testadmin@ad.testing.local
 ```
 
@@ -82,8 +82,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: PasswordDatabaseKuat123!
+      POSTGRES_USER: **************
+      POSTGRES_PASSWORD: **************
       POSTGRES_DB: keycloak
     networks:
       - internal_net
@@ -103,11 +103,11 @@ services:
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      KC_DB_USERNAME: admin
-      KC_DB_PASSWORD: PasswordDatabaseKuat123!
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME_URL: http://38.47.93.132:8080
+      KC_DB_USERNAME: **************
+      KC_DB_PASSWORD: **************
+      KEYCLOAK_ADMIN: **************
+      KEYCLOAK_ADMIN_PASSWORD: **************
+      KC_HOSTNAME_URL: http://**************:8080
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HTTP_ENABLED: "true"
@@ -140,8 +140,8 @@ services:
       - postgres
       - redis
     environment:
-      APP_SECRET: "Hasakus1234567890123456789012345"
-      DATABASE_URL: "postgresql://admin:PasswordDatabaseKuat123!@postgres:5432/docmost?schema=public"
+      APP_SECRET: "**************"
+      DATABASE_URL: "postgresql://**************:**************@postgres:5432/docmost?schema=public"
       REDIS_URL: "redis://redis:6379"
     networks:
       - internal_net
@@ -159,20 +159,20 @@ services:
       - ./login_page:/app/templates
     environment:
       # Database Config
-      DB_HOST: "db_postgres"
-      DB_PASS: "PasswordDatabaseKuat123!"
+      DB_HOST: "**************"
+      DB_PASS: "**************"
       
       # Internal URLs (Komunikasi antar container Docker)
       DOCMOST_INTERNAL_URL: "http://app_docmost:3000"
       KEYCLOAK_INTERNAL_URL: "http://idp_keycloak:8080"
       
       # Public URLs (Redirect Browser)
-      KEYCLOAK_PUBLIC_URL: "http://38.47.93.132:8080"
-      APP_BASE_URL: "http://38.47.93.132:3000"
+      KEYCLOAK_PUBLIC_URL: "http://**************:8080"
+      APP_BASE_URL: "http://**************:3000"
       
       # Keycloak Client Credentials (Agar Gatekeeper bisa tukar token)
-      KEYCLOAK_CLIENT_ID: "poc-docmos"
-      KEYCLOAK_CLIENT_SECRET: "XY52n9Ft8ychHPuvHNxjomyVneCLeDip"
+      KEYCLOAK_CLIENT_ID: "**************"
+      KEYCLOAK_CLIENT_SECRET: "**************"
       
     depends_on:
       - postgres
@@ -299,18 +299,18 @@ app = Flask(__name__)
 DB_HOST = os.environ.get("DB_HOST", "db_postgres")
 DB_NAME = os.environ.get("DB_NAME", "docmost")
 DB_USER = os.environ.get("DB_USER", "admin")
-DB_PASS = os.environ.get("DB_PASS", "PasswordDatabaseKuat123!")
+DB_PASS = os.environ.get("DB_PASS", "**************")
 
 DOCMOST_INTERNAL_URL = os.environ.get("DOCMOST_INTERNAL_URL", "http://app_docmost:3000")
 KEYCLOAK_INTERNAL_URL = os.environ.get("KEYCLOAK_INTERNAL_URL", "http://idp_keycloak:8080")
 
 # Pastikan URL Publik ini benar
-KEYCLOAK_PUBLIC_URL = os.environ.get("KEYCLOAK_PUBLIC_URL", "http://38.47.93.132:8080")
-APP_BASE_URL = os.environ.get("APP_BASE_URL", "http://38.47.93.132:3000")
+KEYCLOAK_PUBLIC_URL = os.environ.get("KEYCLOAK_PUBLIC_URL", "http://**************:8080")
+APP_BASE_URL = os.environ.get("APP_BASE_URL", "http://**************:3000")
 
 KEYCLOAK_REALM = "docmost"
 KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "poc-docmos")
-KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "XY52n9Ft8ychHPuvHNxjomyVneCLeDip")
+KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "**************")
 
 DEFAULT_LOCALE = "en-US"
 DEFAULT_TIMEZONE = "Asia/Jakarta"
@@ -605,7 +605,7 @@ CREATE DATABASE docmost;
 <details>
 <summary>Akses Dashboard Keyloack</summary>
 
-> [http://IP_SERVER:8080](http://IP_SERVER_UBUNTU_ANDA:8080)
+> [http://IP_SERVER:8080](http://**************:8080)
 
 ![](files/019c3888-36b7-72ec-9be5-c89159f9f636/image.png)
 <details>
@@ -637,8 +637,8 @@ cd /opt/keycloak/bin
 
 ```bash
 # Default Login
-username: admin
-password: admin
+username: **************
+password: **************
 ```
 
 ![](files/019c3891-3b9a-703d-b311-7acfae8fe8e0/image.png)
@@ -687,13 +687,13 @@ UI Display Name: Kantor-DTC (Bebas).
 
 Connection & Authentication Settings:
 
-Connection URL: ldap://38.47.92.102:389
+Connection URL: ldap://**************:389
 
 Users DN: CN=Users,DC=ad,DC=testing,DC=local
 
 Bind DN: CN=Test Admin,CN=Users,DC=ad,DC=testing,DC=local
 
-Bind Credential: This_2me@oke
+Bind Credential: **************
 
 Kerberos Integration: default.
 
@@ -763,7 +763,7 @@ KEYCLOAK_CLIENT_ID: "poc-docmos"
 ![](files/019c38b5-861e-71a2-b582-2ad7ba4ddddd/image.png)
 
 :::info
-Login settings Valid redirect URIs: http://38.47.93.132:3000/* (Tanda bintang hanya di development, di production wajib link spesifik).
+Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang hanya di development, di production wajib link spesifik).
 :::
 
 > Selanjutnya Ambil Secret dari Client Secret.
@@ -805,7 +805,7 @@ docker-compose up -d --build
 <summary>Akses halaman Docmost setup workspace Administrator(Owner)</summary>
 
 ```bash
-http://38.47.93.132:3000/setup/register
+http://**************:3000/setup/register
 ```
 
 ![](files/019c38eb-bd41-7649-a23a-5fb03b6115b3/image.png)
