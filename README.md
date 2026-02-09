@@ -774,7 +774,7 @@ Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang 
 
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b9-c8af-760a-8eec-12e3e36c508b/image.png)
 
-> bDuV41eoavlMXVzvVYk5RWiGO1jltkmr
+> **********avlMXVzYk*****
 
 :::info
 Masukkan ke dalam `docker-compose.yml`
