@@ -583,7 +583,7 @@ if __name__ == '__main__':
 docker compose up -d postgres keycloak
 ```
 
-![](files/019c3883-a475-77a6-abdc-8a0af7b6c9cb/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3883-a475-77a6-abdc-8a0af7b6c9cb/image.png)
 
 > Buat Database Docmost
 > 
@@ -597,7 +597,7 @@ CREATE DATABASE docmost;
 \q
 ```
 
-![](files/019c3884-c409-729a-8191-95391b54e90f/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3884-c409-729a-8191-95391b54e90f/image.png)
 
 > Selanjutnya Akses Dashboard Keyloack ip:8080
 
@@ -607,11 +607,11 @@ CREATE DATABASE docmost;
 
 > [http://IP_SERVER:8080](http://**************:8080)
 
-![](files/019c3888-36b7-72ec-9be5-c89159f9f636/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3888-36b7-72ec-9be5-c89159f9f636/image.png)
 <details>
 <summary>HTTPS required Error ⚠️</summary>
 
-![](files/019c3889-6829-70fa-b062-1233eee1ee6c/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3889-6829-70fa-b062-1233eee1ee6c/image.png)
 
 > Secara default, Keycloak **memblokir** akses ke halaman Admin dari IP Publik (Eksternal) jika tidak menggunakan HTTPS.
 
@@ -629,7 +629,7 @@ cd /opt/keycloak/bin
 ./kcadm.sh update realms/master -s sslRequired=NONE
 ```
 
-![](files/019c388e-8556-77ac-9329-acd833c57d87/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c388e-8556-77ac-9329-acd833c57d87/image.png)
 
 > Jika sudah Akses ulang dashboard Keyloack.
 
@@ -641,11 +641,11 @@ username: **************
 password: **************
 ```
 
-![](files/019c3891-3b9a-703d-b311-7acfae8fe8e0/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3891-3b9a-703d-b311-7acfae8fe8e0/image.png)
 
 > Sukses Login
 
-![](files/019c3892-5f9b-77b0-81cb-dbc0586dbc27/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3892-5f9b-77b0-81cb-dbc0586dbc27/image.png)
 
 </details>
 <details>
@@ -656,11 +656,11 @@ password: **************
 
 > Jangan pakai realm "Master" untuk aplikasi. buat wadah khusus misal nama “docmost“
 
-![](files/019c3894-761e-708e-bc5a-7186de16a8e0/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3894-761e-708e-bc5a-7186de16a8e0/image.png)
 
-![](files/019c3895-7c68-77fe-8beb-279144da076f/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3895-7c68-77fe-8beb-279144da076f/image.png)
 
-![](files/019c3896-51b5-73ca-9f3a-456cd7aac960/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3896-51b5-73ca-9f3a-456cd7aac960/image.png)
 
 </details>
 <details>
@@ -671,9 +671,9 @@ password: **************
 - Klik **Add new provider** (atau Add Ldap) pilih **ldap**.
 - Isi formulir dengan data Server AD:
 
-![](files/019c3899-cc82-7676-b2b5-a08781b52a1d/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3899-cc82-7676-b2b5-a08781b52a1d/image.png)
 
-![](files/019c389a-8954-742b-83de-716453aef272/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c389a-8954-742b-83de-716453aef272/image.png)
 
 > Isi sesuai informasi Server Active Directory
 
@@ -702,21 +702,21 @@ Sync Settings:
 Edit Mode: READ_ONLY (Keycloak hanya Menerima AD).
 ```
 
-![](files/019c389c-2e57-730d-8fff-10c47a7469da/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c389c-2e57-730d-8fff-10c47a7469da/image.png)
 
-![](files/019c38a1-90e9-7779-98ad-4f54b27cbc7d/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a1-90e9-7779-98ad-4f54b27cbc7d/image.png)
 
-![](files/019c38a1-cccc-735e-b8ec-3396319da68f/image.png)![](files/019c38a2-a0c0-775a-bbae-49ddaadb685b/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a1-cccc-735e-b8ec-3396319da68f/image.png)![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a2-a0c0-775a-bbae-49ddaadb685b/image.png)
 
 ### Test Koneksi
 
-![](files/019c38a3-f5ec-741c-9f97-29036dc66e70/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a3-f5ec-741c-9f97-29036dc66e70/image.png)
 
-![](files/019c38a4-9845-75fa-ae23-73e40483e0bd/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a4-9845-75fa-ae23-73e40483e0bd/image.png)
 
 > Jika **keduanya Sukses**, klik tombol **Save** di paling bawah.
 
-![](files/019c38a5-8bf2-74fa-a26b-2785fac2c7d7/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a5-8bf2-74fa-a26b-2785fac2c7d7/image.png)
 
 Lanjut ke Sinkronisasi User dari Server Active Directory
 
@@ -724,15 +724,15 @@ Lanjut ke Sinkronisasi User dari Server Active Directory
 <details>
 <summary>Sinkronisasi User di Keyloack Dengan Data Active Directory</summary>
 
-![](files/019c38a7-0fd7-7678-bb32-ebba142b4114/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a7-0fd7-7678-bb32-ebba142b4114/image.png)
 
-![](files/019c38a8-a204-76c4-b225-b7e13a545803/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38a8-a204-76c4-b225-b7e13a545803/image.png)
 
 > Cek menu **Users** di sidebar kiri
 
 Search (\*) Agar tampil semuanya.
 
-![](files/019c38aa-0e9c-72d5-8818-aa273a0e5825/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38aa-0e9c-72d5-8818-aa273a0e5825/image.png)
 
 > Selanjutnya Configurasi Client Secret
 
@@ -742,7 +742,7 @@ Search (\*) Agar tampil semuanya.
 <details>
 <summary>Configurasu Client Secret keyloack untuk `docker-compose.yml`</summary>
 
-![](files/019c38ae-bac6-7150-9b77-d70dcf0b5268/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38ae-bac6-7150-9b77-d70dcf0b5268/image.png)
 
 :::info
 Client ID harus sama dengan isi `docker-compose.yml`
@@ -754,13 +754,13 @@ KEYCLOAK_CLIENT_ID: "poc-docmos"
 ```
 :::
 
-![](files/019c38b3-17b3-739d-9762-e39e72e499fb/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b3-17b3-739d-9762-e39e72e499fb/image.png)
 
 > **Client authentication:** **ON** (Wajib nyala agar dapat Secret).
 
-![](files/019c38b3-dc55-77aa-b955-1d7fe5d9a458/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b3-dc55-77aa-b955-1d7fe5d9a458/image.png)
 
-![](files/019c38b5-861e-71a2-b582-2ad7ba4ddddd/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b5-861e-71a2-b582-2ad7ba4ddddd/image.png)
 
 :::info
 Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang hanya di development, di production wajib link spesifik).
@@ -772,7 +772,7 @@ Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang 
 <details>
 <summary>Ambil Secret dari konfigurasi Client Secret (Untuk di masukkan ke dalam `docker-compose.yml`)</summary>
 
-![](files/019c38b9-c8af-760a-8eec-12e3e36c508b/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b9-c8af-760a-8eec-12e3e36c508b/image.png)
 
 > bDuV41eoavlMXVzvVYk5RWiGO1jltkmr
 
@@ -796,7 +796,7 @@ KEYCLOAK_CLIENT_SECRET: "disini-client-secret"
 docker-compose up -d --build
 ```
 
-![](files/019c38cb-28c0-7190-8198-dcac05bd775b/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38cb-28c0-7190-8198-dcac05bd775b/image.png)
 
 > Selanjutnya Setup Docmost Workpase Administrator
 
@@ -808,13 +808,13 @@ docker-compose up -d --build
 http://**************:3000/setup/register
 ```
 
-![](files/019c38eb-bd41-7649-a23a-5fb03b6115b3/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38eb-bd41-7649-a23a-5fb03b6115b3/image.png)
 
 > Berhasil masuk Dashboard Admin (Logout untuk testing keyloack)
 
-![](files/019c38ec-9ad9-764c-8129-d423137e16ea/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38ec-9ad9-764c-8129-d423137e16ea/image.png)
 
-![](files/019c3934-3889-72af-a1a5-c027fa5f4c6f/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3934-3889-72af-a1a5-c027fa5f4c6f/image.png)
 
 > Sampai sini integrasi Docmost + keyloack + Active Directory berhasil
 
@@ -822,7 +822,7 @@ http://**************:3000/setup/register
 <details>
 <summary>Membuat Keycloak Theme (Custom Login)</summary>
 
-![](files/019c3946-77ec-73c8-9f18-25a709a500a4/image.png)![](files/019c3944-de82-763c-9910-813d00a03bb5/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3946-77ec-73c8-9f18-25a709a500a4/image.png)![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3944-de82-763c-9910-813d00a03bb5/image.png)
 
 ```bash
 # nano themes/docmost-theme/login/theme.properties
@@ -911,9 +911,9 @@ label {
 }
 ```
 
-![](files/019c3948-5223-7099-94a5-cfc74b147bcd/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3948-5223-7099-94a5-cfc74b147bcd/image.png)
 
-![](files/019c3948-cc9c-73ed-8c8a-85e8b3629659/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3948-cc9c-73ed-8c8a-85e8b3629659/image.png)
 
 > Selanjutnya Aktifkan (2FA) OTP
 
@@ -925,57 +925,57 @@ label {
 
 ### Atur Kebijakan OTP (OTP Policy)
 
-![](files/019c3953-7c88-77ee-a561-001a6553a59d/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3953-7c88-77ee-a561-001a6553a59d/image.png)
 
 ### Buat Browser Flow
 
 > Alur yang memaksa user tanpa syarat.
 
-![](files/019c3957-6ed2-74c9-970b-9557f4f22c1b/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3957-6ed2-74c9-970b-9557f4f22c1b/image.png)
 
-![](files/019c3958-2b16-7198-9418-f3700f3da36e/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3958-2b16-7198-9418-f3700f3da36e/image.png)
 
-![](files/019c3959-28a6-7278-9714-b231384ec244/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3959-28a6-7278-9714-b231384ec244/image.png)
 
-![](files/019c3959-d011-7024-9751-702f021c2162/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3959-d011-7024-9751-702f021c2162/image.png)
 
-![](files/019c395a-3218-72fb-a4f5-32b4ec39c185/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395a-3218-72fb-a4f5-32b4ec39c185/image.png)
 
-![](files/019c395a-ddd4-76a7-80e8-eac52562972b/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395a-ddd4-76a7-80e8-eac52562972b/image.png)
 
-![](files/019c395b-7fd5-728d-9dfd-febff6599660/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395b-7fd5-728d-9dfd-febff6599660/image.png)
 
-![](files/019c395c-1394-766b-802c-efddf731cd38/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395c-1394-766b-802c-efddf731cd38/image.png)
 
-![](files/019c395c-c2de-726b-bb17-5fd0782ca533/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395c-c2de-726b-bb17-5fd0782ca533/image.png)
 
 ### Bind Flow ke Browser
 
-![](files/019c395f-576b-732a-b7d1-fbe8487519c9/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395f-576b-732a-b7d1-fbe8487519c9/image.png)
 
-![](files/019c395f-aead-7249-9db1-273e3af1d394/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c395f-aead-7249-9db1-273e3af1d394/image.png)
 
-![](files/019c3960-6a1a-7366-9764-1f614b54dd11/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3960-6a1a-7366-9764-1f614b54dd11/image.png)
 
 ### Paksa Client Menggunakan Flow(Override)
 
-![](files/019c3961-9ce2-70dd-ba92-658e2f44ffe9/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3961-9ce2-70dd-ba92-658e2f44ffe9/image.png)
 
-![](files/019c3962-81d2-748f-9cfb-ffef56b34e21/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3962-81d2-748f-9cfb-ffef56b34e21/image.png)
 
-![](files/019c3963-3880-758b-8456-60505c7af996/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3963-3880-758b-8456-60505c7af996/image.png)
 
 ### Testing Login
 
 > Scan Google Autenthicator
 
-![](files/019c3965-5f4f-73f4-af9c-98dfa49c9e7d/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3965-5f4f-73f4-af9c-98dfa49c9e7d/image.png)
 
 </details>
 <details>
 <summary>Tampilan Custom Login/OTP</summary>
 
-![](files/019c3970-6da5-729d-b2a7-1d9bcb4cd7e8/image.png)
+![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3970-6da5-729d-b2a7-1d9bcb4cd7e8/image.png)
 
 > Menngunakan FTL(FreeMarker Template Language) karena Keycloak dibangun menggunakan bahasa pemrograman Java (lebih spesifiknya framework Quarkus/Wildfly). FreeMarker adalah mesin template standar untuk aplikasi Java.
 
