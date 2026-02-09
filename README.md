@@ -20,7 +20,7 @@ Implementasi SSO Middleware dengan Pendekatan JIT Provisioning dan Synthetic Log
 - 2 vCPU
 - 4 GB RAM
 - 30 GB (vda)
-- Public IP Address (**************)
+- Public IP Address (******\*\*******)
 
 ## Tools Requirement
 
@@ -141,7 +141,7 @@ services:
       - redis
     environment:
       APP_SECRET: "**************"
-      DATABASE_URL: "postgresql://**************:**************@postgres:5432/docmost?schema=public"
+      DATABASE_URL: "postgresql://*********user:**********password@postgres:5432/docmost?schema=public"
       REDIS_URL: "redis://redis:6379"
     networks:
       - internal_net
@@ -161,19 +161,19 @@ services:
       # Database Config
       DB_HOST: "**************"
       DB_PASS: "**************"
-      
+
       # Internal URLs (Komunikasi antar container Docker)
       DOCMOST_INTERNAL_URL: "http://app_docmost:3000"
       KEYCLOAK_INTERNAL_URL: "http://idp_keycloak:8080"
-      
+
       # Public URLs (Redirect Browser)
       KEYCLOAK_PUBLIC_URL: "http://**************:8080"
       APP_BASE_URL: "http://**************:3000"
-      
+
       # Keycloak Client Credentials (Agar Gatekeeper bisa tukar token)
       KEYCLOAK_CLIENT_ID: "**************"
       KEYCLOAK_CLIENT_SECRET: "**************"
-      
+
     depends_on:
       - postgres
       - docmost
@@ -364,7 +364,7 @@ def sync_user_and_get_session_password(email):
         if not existing:
             user_id = str(uuid.uuid4())
             cur.execute("""
-                INSERT INTO users (id, name, email, password, workspace_id, role, email_verified_at, created_at, updated_at, has_generated_password, settings, locale, timezone) 
+                INSERT INTO users (id, name, email, password, workspace_id, role, email_verified_at, created_at, updated_at, has_generated_password, settings, locale, timezone)
                 VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW(), NOW(), false, %s, %s, %s)
             """, (user_id, full_name, email, hashed_pass, primary_workspace_id, ROLE_WORKSPACE_MEMBER, DEFAULT_SETTINGS, DEFAULT_LOCALE, DEFAULT_TIMEZONE))
 
@@ -373,7 +373,7 @@ def sync_user_and_get_session_password(email):
 
             if general_space:
                 cur.execute("""
-                    INSERT INTO space_members (id, space_id, user_id, group_id, role, created_at, updated_at) 
+                    INSERT INTO space_members (id, space_id, user_id, group_id, role, created_at, updated_at)
                     VALUES (%s, %s, %s, NULL, %s, NOW(), NOW())
                 """, (str(uuid.uuid4()), general_space[0], user_id, ROLE_SPACE_READER))
 
@@ -400,7 +400,7 @@ def nuke_all_cookies(resp):
     Menghapus cookie se-agresif mungkin.
     """
     cookies_to_kill = ['docmost_session', 'docmost_userid', 'sso_id_token', 'force_sso_logout']
-    
+
     for cookie in cookies_to_kill:
         resp.set_cookie(cookie, '', expires=0, max_age=0, path='/')
         resp.set_cookie(cookie, '', expires=0, max_age=0, path='/', httponly=True)
@@ -427,7 +427,7 @@ def login_callback():
 
     token_url = f"{KEYCLOAK_INTERNAL_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
     redirect_uri = f"{APP_BASE_URL}/auth/callback"
-    
+
     payload = {
         'grant_type': 'authorization_code',
         'client_id': KEYCLOAK_CLIENT_ID,
@@ -439,12 +439,12 @@ def login_callback():
     try:
         r = requests.post(token_url, data=payload, verify=False, timeout=10)
         token_data = r.json()
-        
+
         if 'access_token' not in token_data:
             print(f"[KEYCLOAK ERROR] {r.text}", file=sys.stderr)
             return f"Gagal Token: {r.text}", 401
 
-        id_token = token_data.get('id_token') 
+        id_token = token_data.get('id_token')
         access_token = token_data['access_token']
 
         user_info_url = f"{KEYCLOAK_INTERNAL_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/userinfo"
@@ -464,7 +464,7 @@ def login_callback():
 
         if dm_resp.status_code in [200, 201]:
             final_resp = make_response(redirect('/'))
-            
+
             # Pasang Cookie ID Token (Wajib ada untuk bypass login)
             if id_token:
                 final_resp.set_cookie('sso_id_token', id_token, path='/', httponly=True, samesite='Lax')
@@ -475,10 +475,10 @@ def login_callback():
                 token = data.get('accessToken') or data.get('token')
                 if token:
                     final_resp.set_cookie('docmost_session', token, path='/', httponly=True, samesite='Lax')
-            
+
             for k, v in upstream_cookies.items():
                 final_resp.set_cookie(k, v, path='/', httponly=True, samesite='Lax')
-            
+
             return final_resp
         else:
             return f"Login Backend Fail: {dm_resp.status_code}", 500
@@ -503,22 +503,22 @@ def proxy(path):
     if request.cookies.get('force_sso_logout') == 'true':
         id_token_hint = request.cookies.get('sso_id_token')
         post_logout_redirect = urllib.parse.quote(f"{APP_BASE_URL}/auth/login")
-        
+
         logout_url = f"{KEYCLOAK_PUBLIC_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/logout?post_logout_redirect_uri={post_logout_redirect}&client_id={KEYCLOAK_CLIENT_ID}"
         if id_token_hint:
             logout_url += f"&id_token_hint={id_token_hint}"
-            
+
         resp = make_response(redirect(logout_url))
         nuke_all_cookies(resp)
         return resp
 
     # 2. DEFINISI WHITELIST (File aset boleh lewat tanpa login)
     is_whitelisted = (
-        path in ["auth/login", "auth/callback"] or 
-        path.startswith("assets") or 
-        path.startswith("_next") or 
-        path.startswith("setup") or 
-        path.startswith("api/public") or 
+        path in ["auth/login", "auth/callback"] or
+        path.startswith("assets") or
+        path.startswith("_next") or
+        path.startswith("setup") or
+        path.startswith("api/public") or
         path == "manifest.json" or
         path == "favicon.ico" or
         path == "robots.txt" or
@@ -532,7 +532,7 @@ def proxy(path):
     # 3. CEK AUTENTIKASI KETAT
     # Jika browser tidak punya 'sso_id_token' DAN tidak punya 'docmost_session',
     # maka browser dianggap tamu ilegal -> Redirect Login.
-    
+
     has_valid_session = request.cookies.get('sso_id_token') or request.cookies.get('docmost_session')
 
     if not has_valid_session and not is_whitelisted:
@@ -542,7 +542,7 @@ def proxy(path):
     try:
         url = f"{DOCMOST_INTERNAL_URL}/{path}"
         if request.query_string: url += f"?{request.query_string.decode('utf-8')}"
-        
+
         headers = {k: v for k, v in request.headers if k.lower() != 'host'}
 
         resp = requests.request(
@@ -553,10 +553,10 @@ def proxy(path):
             cookies=request.cookies,
             allow_redirects=False
         )
-        
+
         excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
         headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
-        
+
         final_response = Response(resp.content, resp.status_code, headers)
 
         # 5. MENCEGAH CACHE HALAMAN DASHBOARD
@@ -586,7 +586,7 @@ docker compose up -d postgres keycloak
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3883-a475-77a6-abdc-8a0af7b6c9cb/image.png)
 
 > Buat Database Docmost
-> 
+>
 > Karena Docmost butuh database sendiri,jadi harus masuk ke postgres sebentar untuk bikin DB kosong.
 
 ```bash
@@ -608,6 +608,7 @@ CREATE DATABASE docmost;
 > [http://IP_SERVER:8080](http://**************:8080)
 
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c3888-36b7-72ec-9be5-c89159f9f636/image.png)
+
 <details>
 <summary>HTTPS required Error ⚠️</summary>
 
@@ -752,6 +753,7 @@ Client ID harus sama dengan isi `docker-compose.yml`
 ```bash
 KEYCLOAK_CLIENT_ID: "poc-docmos"
 ```
+
 :::
 
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b3-17b3-739d-9762-e39e72e499fb/image.png)
@@ -763,7 +765,7 @@ KEYCLOAK_CLIENT_ID: "poc-docmos"
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b5-861e-71a2-b582-2ad7ba4ddddd/image.png)
 
 :::info
-Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang hanya di development, di production wajib link spesifik).
+Login settings Valid redirect URIs: http://******\*\*******:3000/\* (Tanda bintang hanya di development, di production wajib link spesifik).
 :::
 
 > Selanjutnya Ambil Secret dari Client Secret.
@@ -774,7 +776,7 @@ Login settings Valid redirect URIs: http://**************:3000/* (Tanda bintang 
 
 ![](https://raw.githubusercontent.com/ica4me/docmost-sso-custom/main/dokumentasi/019c38b9-c8af-760a-8eec-12e3e36c508b/image.png)
 
-> **********avlMXVzYk*****
+> ****\*\*****avlMXVzYk**\***
 
 :::info
 Masukkan ke dalam `docker-compose.yml`
@@ -784,6 +786,7 @@ bagian Gatekeeper:
 ```bash
 KEYCLOAK_CLIENT_SECRET: "disini-client-secret"
 ```
+
 :::
 
 > Selanjutnya Nyalakan Semua Container
@@ -1002,7 +1005,7 @@ styles=css/styles.css
       <div id="kc-form-wrapper">
         <#if realm.password>
             <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
-                
+
                 <div class="${properties.kcFormGroupClass!}">
                     <label for="username" class="${properties.kcLabelClass!}"><#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if></label>
 
@@ -1046,7 +1049,7 @@ styles=css/styles.css
             </form>
         </#if>
       </div>
-      
+
       <#if realm.password && social.providers??>
         <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
             <hr/>
@@ -1061,7 +1064,7 @@ styles=css/styles.css
             </ul>
         </div>
       </#if>
-      
+
     </div>
     </#if>
 </@layout.registrationLayout>
@@ -1078,15 +1081,15 @@ styles=css/styles.css
         ${msg("doLogIn")}
     <#elseif section = "form">
         <form id="kc-otp-login-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
-            
+
             <div class="${properties.kcFormGroupClass!}">
                 <div class="${properties.kcLabelWrapperClass!}">
                     <label for="otp" class="${properties.kcLabelClass!}">${msg("loginOtpOneTime")}</label>
                 </div>
-                
+
                 <div class="${properties.kcInputWrapperClass!}">
                     <input id="otp" name="otp" autocomplete="off" type="text" class="form-control" autofocus aria-invalid="<#if messagesPerField.existsError('totp')>true</#if>"/>
-                    
+
                     <#if messagesPerField.existsError('totp')>
                         <span id="input-error-otp-code" class="${properties.kcInputErrorMessageClass!}" aria-live="polite" style="color:red; margin-top:5px; display:block;">
                             ${kcSanitize(messagesPerField.get('totp'))?no_esc}
@@ -1122,9 +1125,9 @@ styles=css/styles.css
 
             <form class="form-actions" action="${url.logoutConfirmAction}" method="POST">
                 <input type="hidden" name="session_code" value="${logoutConfirm.code}">
-                
+
                 <div id="kc-form-buttons" class="${properties.kcFormGroupClass!}">
-                    <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" 
+                    <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
                            name="confirmLogout" id="kc-logout" type="submit" value="${msg("doLogout")}"/>
                 </div>
             </form>
@@ -1240,28 +1243,28 @@ Sistem ini bekerja dengan menempatkan Gatekeeper (Python Middleware) sebagai per
 Berikut adalah 4 tahapan prosesnya:
 
 - Intersepsi & Validasi Identitas  
-    User membuka domain docmost  
-    Nginx meneruskan permintaan ke Gatekeeper.  
-    Gatekeeper memeriksa apakah browser pengguna memiliki Cookie sso_id_token atau docmost_session.  
-    Jika tidak ada Cookie, Gatekeeper melempar pengguna ke halaman login Keycloak.
+   User membuka domain docmost  
+   Nginx meneruskan permintaan ke Gatekeeper.  
+   Gatekeeper memeriksa apakah browser pengguna memiliki Cookie sso_id_token atau docmost_session.  
+   Jika tidak ada Cookie, Gatekeeper melempar pengguna ke halaman login Keycloak.
 - Autentikasi Terpusat  
-    Keycloak menampilkan formulir login.  
-    User memasukkan username & password akun Active Directory.  
-    Keycloak memverifikasi kredensial tersebut langsung ke server Active Directory/LDAP.  
-    Jika valid, Keycloak mengirimkan data pengguna (Email & Nama) kembali ke Gatekeeper melalui protokol OpenID Connect (OIDC).  
-    Password asli AD tidak pernah dikirim ke Gatekeeper atau Docmost.
+   Keycloak menampilkan formulir login.  
+   User memasukkan username & password akun Active Directory.  
+   Keycloak memverifikasi kredensial tersebut langsung ke server Active Directory/LDAP.  
+   Jika valid, Keycloak mengirimkan data pengguna (Email & Nama) kembali ke Gatekeeper melalui protokol OpenID Connect (OIDC).  
+   Password asli AD tidak pernah dikirim ke Gatekeeper atau Docmost.
 - Sinkronisasi Kilat & Kredensial Sementara  
-    Ini adalah inti dari bypass sistem:  
-    Gatekeeper menerima email pengguna yang terverifikasi (misal: [wahyudi@datacomm.co.id](mailto:wahyudi@datacomm.co.id)).  
-    Gatekeeper membuat password acak 32 karakter (kredensial sekali pakai) yang sangat kuat.  
-    JIT (Just-In-Time) Provisioning: Gatekeeper melakukan koneksi langsung ke database PostgreSQL Docmost:  
-    Jika pengguna BARU: Gatekeeper membuat user baru di database Docmost dengan password acak tersebut.  
-    Jika pengguna LAMA: Gatekeeper menimpa password lama di database dengan password acak yang baru dibuat.
+   Ini adalah inti dari bypass sistem:  
+   Gatekeeper menerima email pengguna yang terverifikasi (misal: [wahyudi@datacomm.co.id](mailto:wahyudi@datacomm.co.id)).  
+   Gatekeeper membuat password acak 32 karakter (kredensial sekali pakai) yang sangat kuat.  
+   JIT (Just-In-Time) Provisioning: Gatekeeper melakukan koneksi langsung ke database PostgreSQL Docmost:  
+   Jika pengguna BARU: Gatekeeper membuat user baru di database Docmost dengan password acak tersebut.  
+   Jika pengguna LAMA: Gatekeeper menimpa password lama di database dengan password acak yang baru dibuat.
 - Login Sintetis & Injeksi Sesi  
-    Gatekeeper bertindak sebagai "robot" yang melakukan login ke API Docmost (POST /api/auth/login) menggunakan email user dan password acak tadi.  
-    Docmost memvalidasi login sukses dan memberikan Session Cookie.  
-    Gatekeeper mengambil cookie tersebut dan menanamkannya (inject) ke browser pengguna.  
-    Redirect: Pengguna diarahkan kembali ke halaman utama. Browser pengguna kini memiliki sesi valid seolah-olah mereka login manual.
+   Gatekeeper bertindak sebagai "robot" yang melakukan login ke API Docmost (POST /api/auth/login) menggunakan email user dan password acak tadi.  
+   Docmost memvalidasi login sukses dan memberikan Session Cookie.  
+   Gatekeeper mengambil cookie tersebut dan menanamkannya (inject) ke browser pengguna.  
+   Redirect: Pengguna diarahkan kembali ke halaman utama. Browser pengguna kini memiliki sesi valid seolah-olah mereka login manual.
 
 </details>
 <details>
