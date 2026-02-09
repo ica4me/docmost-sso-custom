@@ -1,0 +1,141 @@
+version: "3.8"
+
+services:
+  # ----------------------------------------------------------------
+  # 1. DATABASE (PostgreSQL)
+  # ----------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: db_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - internal_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------
+  # 2. KEYCLOAK (Identity Provider)
+  # ----------------------------------------------------------------
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: idp_keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB_KEYCLOAK}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME_URL: http://${PUBLIC_HOST}:8080
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./themes:/opt/keycloak/themes
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal_net
+
+  # ----------------------------------------------------------------
+  # 3. REDIS (Cache Docmost)
+  # ----------------------------------------------------------------
+  redis:
+    image: redis:alpine
+    container_name: cache_redis
+    networks:
+      - internal_net
+
+  # ----------------------------------------------------------------
+  # 4. DOCMOST (Aplikasi Utama - HIDDEN)
+  # ----------------------------------------------------------------
+  docmost:
+    image: docmost/docmost:latest
+    container_name: app_docmost
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      APP_SECRET: "${DOCMOST_APP_SECRET}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_DOCMOST}?schema=public"
+      REDIS_URL: "redis://redis:6379"
+    networks:
+      - internal_net
+
+  # ----------------------------------------------------------------
+  # 5. GATEKEEPER (Auth Middleware)
+  # ----------------------------------------------------------------
+  gatekeeper:
+    build: .
+    container_name: jit_gatekeeper
+    restart: always
+    command: gunicorn -w 2 -b 0.0.0.0:5000 --reload --access-logfile - --error-logfile - gatekeeper:app
+    volumes:
+      - ./gatekeeper.py:/app/gatekeeper.py
+      - ./login_page:/app/templates
+    environment:
+      # Database Config
+      DB_HOST: "db_postgres"
+      DB_PASS: "${POSTGRES_PASSWORD}"
+
+      # Internal URLs (Komunikasi antar container Docker)
+      DOCMOST_INTERNAL_URL: "http://app_docmost:3000"
+      KEYCLOAK_INTERNAL_URL: "http://idp_keycloak:8080"
+
+      # Public URLs (Redirect Browser)
+      KEYCLOAK_PUBLIC_URL: "http://${PUBLIC_HOST}:8080"
+      APP_BASE_URL: "http://${PUBLIC_HOST}:3000"
+
+      # Keycloak Client Credentials
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+
+      # Mengambil nilai dari .env
+      KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+      COOKIE_SESSION_NAME: "${COOKIE_SESSION_NAME}"
+      COOKIE_SSO_TOKEN: "${COOKIE_SSO_TOKEN}"
+      DEFAULT_SPACE_NAME: "${DEFAULT_SPACE_NAME}"
+      FLASK_SECRET_KEY: "${FLASK_SECRET_KEY}"
+
+    depends_on:
+      - postgres
+      - docmost
+      - keycloak
+    networks:
+      - internal_net
+
+  # ----------------------------------------------------------------
+  # 6. NGINX (Reverse Proxy)
+  # ----------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: main_proxy
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - gatekeeper
+      - docmost
+    networks:
+      - internal_net
+
+networks:
+  internal_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
